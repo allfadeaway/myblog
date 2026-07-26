@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>复现的一些心得 | Hexo</title><meta name="author" content="Ryan Xu"><meta name="copyright" content="Ryan Xu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="当前也是复现完了 Transformer 和 SASRec，有一些基本的体会：  复现的过程中会发现很多之前理解上有漏洞的地方，这些地方是尤其需要注意的：例如 SASRec 隐藏层的问题等。 复现的关键不在于写代码，AI 时代写代码变得很不值钱，更重要的是理解代码的意思，知道某一个问题需要用什么办法去解决。 复现的时候需要注意数据的形状，这能很好地帮助理解。 注意调试方法的积累，学会怎么修改、调试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="复现的一些心得">
+<meta property="og:url" content="http://allfadeaway.github.io/myblog/2026/07/24/%E5%A4%8D%E7%8E%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="当前也是复现完了 Transformer 和 SASRec，有一些基本的体会：  复现的过程中会发现很多之前理解上有漏洞的地方，这些地方是尤其需要注意的：例如 SASRec 隐藏层的问题等。 复现的关键不在于写代码，AI 时代写代码变得很不值钱，更重要的是理解代码的意思，知道某一个问题需要用什么办法去解决。 复现的时候需要注意数据的形状，这能很好地帮助理解。 注意调试方法的积累，学会怎么修改、调试">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://allfadeaway.github.io/myblog/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-07-24T07:29:08.000Z">
+<meta property="article:modified_time" content="2026-07-26T06:48:29.949Z">
+<meta property="article:author" content="Ryan Xu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://allfadeaway.github.io/myblog/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "复现的一些心得",
+  "url": "http://allfadeaway.github.io/myblog/2026/07/24/%E5%A4%8D%E7%8E%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97/",
+  "image": "http://allfadeaway.github.io/myblog/img/butterfly-icon.png",
+  "datePublished": "2026-07-24T07:29:08.000Z",
+  "dateModified": "2026-07-26T06:48:29.949Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Ryan Xu",
+      "url": "http://allfadeaway.github.io/myblog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/myblog/img/favicon.png"><link rel="canonical" href="http://allfadeaway.github.io/myblog/2026/07/24/%E5%A4%8D%E7%8E%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/myblog/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/myblog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '复现的一些心得',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/myblog/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/myblog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/myblog/archives/"><div class="headline">Articles</div><div class="length-num">4</div></a><a href="/myblog/tags/"><div class="headline">Tags</div><div class="length-num">1</div></a><a href="/myblog/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog/"><i class="fa-fw fa fa-home"></i><span> home</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/categories/"><i class="fa-fw fa fa-th"></i><span> categories</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/tags/"><i class="fa-fw fa fa-tags"></i><span> tags</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/archives/"><i class="fa-fw fa fa-archive"></i><span> archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/myblog/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/myblog/"><span class="site-name">复现的一些心得</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog/"><i class="fa-fw fa fa-home"></i><span> home</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/categories/"><i class="fa-fw fa fa-th"></i><span> categories</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/tags/"><i class="fa-fw fa fa-tags"></i><span> tags</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/archives/"><i class="fa-fw fa fa-archive"></i><span> archives</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">复现的一些心得</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-07-24T07:29:08.000Z" title="Created 2026-07-24 15:29:08">2026-07-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-07-26T06:48:29.949Z" title="Updated 2026-07-26 14:48:29">2026-07-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/myblog/categories/%E9%9A%8F%E7%AC%94/">随笔</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>当前也是复现完了 Transformer 和 SASRec，有一些基本的体会：</p>
+<ol>
+<li>复现的过程中会发现很多之前理解上有漏洞的地方，这些地方是尤其需要注意的：例如 SASRec 隐藏层的问题等。</li>
+<li>复现的关键不在于写代码，AI 时代写代码变得很不值钱，更重要的是理解代码的意思，知道某一个问题需要用什么办法去解决。</li>
+<li>复现的时候需要注意数据的形状，这能很好地帮助理解。</li>
+<li>注意调试方法的积累，学会怎么修改、调试代码，做好阶段性测试。</li>
+<li>积累模块的思维，就像是算法或者数据结构一样，了解一个模块的作用、输入输出等等，设计新东西的时候整块取用即可。</li>
+<li>（后面在看别人代码的时候可以积累一些好的实现方法、代码习惯等等）</li>
+</ol>
+<p>后续会复现 TIGER，后面可能会继续搞 DPO、GRPO 之类的东西。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://allfadeaway.github.io/myblog">Ryan Xu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://allfadeaway.github.io/myblog/2026/07/24/%E5%A4%8D%E7%8E%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97/">http://allfadeaway.github.io/myblog/2026/07/24/%E5%A4%8D%E7%8E%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/myblog/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/myblog/2026/07/25/Generative-Models/" title="Generative Models"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Generative Models</div></div><div class="info-2"><div class="info-item-1"> Generative Models 参考 MIT6.S978 的课件  生成式模型的特点   There are multiple or infinite predictions to one input. 即它不是学习一个“函数”的形式   Some predictions are more “plausible” than some others.   Training data may contain no exact solution.   Predictions may be more complex, more informative, and higher-dimensional than input.   除此之外，还有一个特点是：生成结果应该是一个结构化的东西，而不是单一、原子的东西。比如对于生成式推荐 TIGER，它生成的 tokens 之间是有联系的（例如每 4 个 token 对应一个码字）；而判别式推荐 SASRec 也会生成预测物品，但这个预测物品是原子的，所以更像是对物品序列的多分类问题。这也是为什么 softmax 只能算多分类而不是生成模型。 ...</div></div></div></a><a class="pagination-related" href="/myblog/2026/07/23/Pytorch-Learning-Plan-2/" title="Pytorch Learning Plan 2-SASRec"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Pytorch Learning Plan 2-SASRec</div></div><div class="info-2"><div class="info-item-1"> Pytorch Learning Plan 2-SASRec 本文主要记录复现 SASRec 的过程以及得到的一些经验（参照 前辈的代码），写为 Plan 2 是因为 Plan 1 是复现了 Transformer （参照 CS336 的assignment）但是还没写总结。 按照我目前学习深度学习的经验，其过程可以分为：数据准备、模型（model）、优化（optimizer）、目标（loss）、评估（evaluate），本文也会以这个分类进行展开。  AI给出的更具体的过程 数据：Dataset / DataLoader / 预处理与增强 模型：网络结构、参数初始化 目标：loss + 正则项 梯度：autograd / 反向传播 优化：optimizer + scheduler 循环：training loop、评估、early stopping 工程：checkpoint、日志、device / AMP / 分布式   SASRec 总览  它想解决什么问题 推荐系统里有一类问题叫序列推荐：已知一个用户按时间顺序交互过的物品 [i₁, i₂, ..., iₜ]，预测他下一...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/myblog/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/myblog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Ryan Xu</div><div class="author-info-description"></div><div class="site-data"><a href="/myblog/archives/"><div class="headline">Articles</div><div class="length-num">4</div></a><a href="/myblog/tags/"><div class="headline">Tags</div><div class="length-num">1</div></a><a href="/myblog/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/allfadeaway"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/25/VAE/" title="VAE">VAE</a><time datetime="2026-07-25T05:04:33.000Z" title="Created 2026-07-25 13:04:33">2026-07-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/25/Generative-Models/" title="Generative Models">Generative Models</a><time datetime="2026-07-25T04:06:54.000Z" title="Created 2026-07-25 12:06:54">2026-07-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/24/%E5%A4%8D%E7%8E%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97/" title="复现的一些心得">复现的一些心得</a><time datetime="2026-07-24T07:29:08.000Z" title="Created 2026-07-24 15:29:08">2026-07-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/23/Pytorch-Learning-Plan-2/" title="Pytorch Learning Plan 2-SASRec">Pytorch Learning Plan 2-SASRec</a><time datetime="2026-07-23T12:18:06.000Z" title="Created 2026-07-23 20:18:06">2026-07-23</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Ryan Xu</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/myblog/js/utils.js?v=5.6.1"></script><script src="/myblog/js/main.js?v=5.6.1"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css')
+    if (false) {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
