@@ -1,0 +1,357 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CS106L_note1 | Hexo</title><meta name="author" content="Ryan Xu"><meta name="copyright" content="Ryan Xu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CS106L_note1  Lecture2: Types and Structs  Types size_t 是 C++ 中专门用来表示对象大小、元素数量和下标的一种无符号整数类型。 C++ is a Static-Typed language Overloading 12345678double func(int x) &#123; &#x2F;&#x2F; (1)	return (double) x + 3;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS106L_note1">
+<meta property="og:url" content="http://allfadeaway.github.io/myblog/2026/10/03/CS106L_note1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="CS106L_note1  Lecture2: Types and Structs  Types size_t 是 C++ 中专门用来表示对象大小、元素数量和下标的一种无符号整数类型。 C++ is a Static-Typed language Overloading 12345678double func(int x) &#123; &#x2F;&#x2F; (1)	return (double) x + 3;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://allfadeaway.github.io/myblog/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-10-03T08:51:47.000Z">
+<meta property="article:modified_time" content="2026-10-04T07:32:44.310Z">
+<meta property="article:author" content="Ryan Xu">
+<meta property="article:tag" content="CS106L">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://allfadeaway.github.io/myblog/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CS106L_note1",
+  "url": "http://allfadeaway.github.io/myblog/2026/10/03/CS106L_note1/",
+  "image": "http://allfadeaway.github.io/myblog/img/butterfly-icon.png",
+  "datePublished": "2026-10-03T08:51:47.000Z",
+  "dateModified": "2026-10-04T07:32:44.310Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Ryan Xu",
+      "url": "http://allfadeaway.github.io/myblog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/myblog/img/favicon.png"><link rel="canonical" href="http://allfadeaway.github.io/myblog/2026/10/03/CS106L_note1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/myblog/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/myblog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CS106L_note1',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/myblog/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/myblog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/myblog/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/myblog/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/myblog/categories/"><div class="headline">Categories</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog/"><i class="fa-fw fa fa-home"></i><span> home</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/categories/"><i class="fa-fw fa fa-th"></i><span> categories</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/tags/"><i class="fa-fw fa fa-tags"></i><span> tags</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/archives/"><i class="fa-fw fa fa-archive"></i><span> archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/myblog/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/myblog/"><span class="site-name">CS106L_note1</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/myblog/"><i class="fa-fw fa fa-home"></i><span> home</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/categories/"><i class="fa-fw fa fa-th"></i><span> categories</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/tags/"><i class="fa-fw fa fa-tags"></i><span> tags</span></a></div><div class="menus_item"><a class="site-page" href="/myblog/archives/"><i class="fa-fw fa fa-archive"></i><span> archives</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CS106L_note1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-10-03T08:51:47.000Z" title="Created 2026-10-03 16:51:47">2026-10-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-10-04T07:32:44.310Z" title="Updated 2026-10-04 15:32:44">2026-10-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/myblog/categories/C/">C++</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="cs106l_note1"><a class="markdownIt-Anchor" href="#cs106l_note1"></a> CS106L_note1</h1>
+<h2 id="lecture2-types-and-structs"><a class="markdownIt-Anchor" href="#lecture2-types-and-structs"></a> Lecture2: Types and Structs</h2>
+<h3 id="types"><a class="markdownIt-Anchor" href="#types"></a> Types</h3>
+<p><code>size_t</code> 是 C++ 中专门用来表示<strong>对象大小、元素数量和下标</strong>的一种无符号整数类型。</p>
+<p>C++ is a <strong>Static-Typed</strong> language</p>
+<p>Overloading</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">double</span> <span class="title">func</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123; <span class="comment">// (1)</span></span><br><span class="line">	<span class="keyword">return</span> (<span class="type">double</span>) x + <span class="number">3</span>; <span class="comment">// typecast: int → double</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">double</span> <span class="title">func</span><span class="params">(<span class="type">double</span> x)</span> </span>&#123; <span class="comment">// (2)</span></span><br><span class="line">	<span class="keyword">return</span> x * <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">func</span>(<span class="number">2</span>) <span class="comment">// uses version (1), returns ? </span></span><br><span class="line"><span class="built_in">func</span>(<span class="number">2.0</span>) <span class="comment">// uses version (2), returns ?</span></span><br></pre></td></tr></table></figure>
+<h3 id="structs"><a class="markdownIt-Anchor" href="#structs"></a> Structs</h3>
+<p><strong>A</strong> <strong>struct</strong> <strong>is a group of named variables</strong> (each with their own type)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Student s = &#123;“Ethan”, “CA”, <span class="number">30</span>&#125;;</span><br><span class="line"><span class="comment">// note that order is based on the original struct order!</span></span><br><span class="line"><span class="comment">// generally prefer this syntax for initialization</span></span><br></pre></td></tr></table></figure>
+<h3 id="pairs-tuples"><a class="markdownIt-Anchor" href="#pairs-tuples"></a> <strong>Pairs</strong> &amp; Tuples</h3>
+<p><strong>A</strong> <strong>pair</strong> <strong>is a struct with two fields.</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	std::pair&lt;<span class="type">bool</span>, Student&gt; query_result;</span><br><span class="line">	query_result.first = <span class="literal">true</span>;</span><br><span class="line">	query_result.second = &#123;“Ethan”, “CA”, <span class="number">30</span>&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>std::pair</strong> is a <strong>template.</strong> You can use any type inside it; type goes in the &lt;&gt;</p>
+<p><strong>A</strong> <strong>tuple</strong> <strong>is a struct with lots of fields.</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	std::tuple&lt;string, <span class="type">int</span>, <span class="type">int</span>&gt; query_result;</span><br><span class="line">	string name = std::<span class="built_in">get</span>&lt;<span class="number">0</span>&gt;(query_result);</span><br><span class="line">	<span class="type">int</span> num = std::<span class="built_in">get</span>&lt;<span class="number">1</span>&gt;(query_result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>std::tuple</strong> is <strong>uncommon</strong>. We won’t use it much in future lectures.<br />
+(Datatypes like std::vector are generally more useful.)</p>
+<h3 id="auto"><a class="markdownIt-Anchor" href="#auto"></a> Auto</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// What types are these?</span></span><br><span class="line"><span class="keyword">auto</span> a = <span class="number">3</span>; <span class="comment">// int</span></span><br><span class="line"><span class="keyword">auto</span> b = <span class="number">4.3</span>; <span class="comment">// double</span></span><br><span class="line"><span class="keyword">auto</span> c = ‘X’; <span class="comment">// char</span></span><br><span class="line"><span class="keyword">auto</span> d = “Hello”; <span class="comment">// char*</span></span><br><span class="line"><span class="keyword">auto</span> e = std::<span class="built_in">make_pair</span>(<span class="number">3</span>, <span class="number">3</span>); <span class="comment">// std::pair&lt;int, int&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>auto</strong> <strong>does not mean that the variable doesn’t have a type.</strong></p>
+<p>It means that the type is <strong>deduced</strong> by the compiler.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">wrong</span><span class="params">()</span> </span>&#123; <span class="comment">// this won’t work</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">wrong</span><span class="params">(string a, <span class="keyword">auto</span> b)</span> </span>&#123; <span class="comment">// neither will this work</span></span><br><span class="line">	<span class="keyword">return</span> a * b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>auto</code> 最初主要用于<strong>变量类型推导</strong>，不能随便拿来代替函数返回值和函数参数类型。</p>
+<p><strong>C<ins>11 中不合法，但是目前 C</ins>14 中编译器会自动推导出第一段程序返回 int，C++20 也已经支持 auto 参数</strong></p>
+<h3 id="structured-binding"><a class="markdownIt-Anchor" href="#structured-binding"></a> Structured Binding</h3>
+<p>Structured binding lets you initialize directly from the contents of a struct</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// before</span></span><br><span class="line"><span class="keyword">auto</span> p = std::<span class="built_in">make_pair</span>(“s”, <span class="number">5</span>);</span><br><span class="line">string a = s.first;</span><br><span class="line"><span class="type">int</span> b = s.second;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// after</span></span><br><span class="line"><span class="keyword">auto</span> p = std::<span class="built_in">make_pair</span>(“s”, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">auto</span> [a, b] = p;</span><br><span class="line"><span class="comment">// a is of type string</span></span><br><span class="line"><span class="comment">// b is of type int</span></span><br><span class="line"><span class="comment">// auto [a, b] = std::make_pair(...);</span></span><br></pre></td></tr></table></figure>
+<h2 id="lecture-3-initialization-and-references"><a class="markdownIt-Anchor" href="#lecture-3-initialization-and-references"></a> Lecture 3: Initialization and References</h2>
+<h3 id="uniform-initialization"><a class="markdownIt-Anchor" href="#uniform-initialization"></a> Uniform Initialization</h3>
+<p>Initialization is how we provide initial values to variables</p>
+<p><strong>Uniform initialization</strong> provides a way for us to use <strong>brackets</strong> to initialize anything succinctly</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">\\ BEFORE</span><br><span class="line">std::pair&lt;bool, int&gt; some_pair = </span><br><span class="line">	std::make_pair(false, 6);</span><br><span class="line">Student s;</span><br><span class="line">s.name = “Ethan”;</span><br><span class="line">s.state = “CA”;</span><br><span class="line">s.age = 20;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">\\ AFTER</span><br><span class="line">std::pair&lt;bool, int&gt;</span><br><span class="line">some_pair&#123;false, 6&#125;;</span><br><span class="line">Student s&#123;&quot;Ethan&quot;, &quot;CA&quot;, 20&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> n = <span class="number">3</span>;</span><br><span class="line"><span class="type">int</span> k = <span class="number">5</span>;</span><br><span class="line"><span class="function">std::vector&lt;<span class="type">int</span>&gt; <span class="title">v</span><span class="params">(n, k)</span></span>; <span class="comment">// &#123;5, 5, 5&#125;</span></span><br><span class="line">std::vector&lt;<span class="type">int</span>&gt; v2&#123;n, k&#125;; <span class="comment">// &#123;3, 5&#125; -- not the same!!</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::initializer_list&lt;<span class="type">int</span>&gt; list_init&#123;<span class="number">3</span>, <span class="number">5</span>&#125;; <span class="comment">// before C++17 type is std::initializer_list</span></span><br><span class="line"><span class="keyword">auto</span> list_init = &#123;<span class="number">3</span>, <span class="number">5</span>&#125;; <span class="comment">// C++17</span></span><br></pre></td></tr></table></figure>
+<h3 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">doubleValue</span><span class="params">(<span class="type">int</span>&amp; x)</span> </span>&#123;</span><br><span class="line">     x *= <span class="number">2</span>;</span><br><span class="line">     <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="type">int</span> myValue = <span class="number">5</span>;</span><br><span class="line">     <span class="type">int</span> result = <span class="built_in">doubleValue</span>(myValue);</span><br><span class="line">     cout &lt;&lt; myValue &lt;&lt; endl; <span class="comment">// 10</span></span><br><span class="line">     cout &lt;&lt; result &lt;&lt; endl; <span class="comment">// 10</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The variable myValue is passed by reference into doubleValue.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// x inside doubleValue is an alias for myValue in main. This means it’s another name for the same variable!</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// A change to x is a change to myValue.</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; original&#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; copy = original;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt;&amp; ref = original;</span><br><span class="line"></span><br><span class="line">original.<span class="built_in">push_back</span>(<span class="number">3</span>);</span><br><span class="line">copy.<span class="built_in">push_back</span>(<span class="number">4</span>);</span><br><span class="line">ref.<span class="built_in">push_back</span>(<span class="number">5</span>);</span><br><span class="line"><span class="comment">// original (and also ref!) = &#123;1, 2, 3, 5&#125;</span></span><br><span class="line"><span class="comment">// copy = &#123;1, 2, 4&#125;</span></span><br><span class="line"></span><br><span class="line">ref = copy;</span><br><span class="line">copy.<span class="built_in">push_back</span>(<span class="number">6</span>);</span><br><span class="line">ref.<span class="built_in">push_back</span>(<span class="number">7</span>);</span><br><span class="line"><span class="comment">// original = &#123;1, 2, 4, 7&#125;</span></span><br><span class="line"><span class="comment">// copy = &#123;1, 2, 4, 6&#125;</span></span><br></pre></td></tr></table></figure>
+<p>想要把 Course 的 time 加 1h</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Course</span> &#123;</span><br><span class="line">    std::string code;</span><br><span class="line">    std::pair&lt;Time, Time&gt; time;</span><br><span class="line">    std::vector&lt;std::string&gt; instructors;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Time</span> &#123;</span><br><span class="line">     <span class="type">int</span> hour, minute;</span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">shift</span><span class="params">(std::vector&lt;Course&gt;&amp; courses)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// TODO</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>buggy：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">shift</span><span class="params">(vector&lt;Course&gt;&amp; courses)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; courses.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">		<span class="keyword">auto</span> [code, time, instructors] = courses[i];</span><br><span class="line">		time.first.hour++;</span><br><span class="line">		time.second.hour++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">shift</span><span class="params">(vector&lt;Course&gt;&amp; courses)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">auto</span> [code, time, instructors] : courses) &#123;</span><br><span class="line">         time.first.hour++;</span><br><span class="line">         time.second.hour++;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>fixed:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">shift</span><span class="params">(vector&lt;Course&gt;&amp; courses)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; courses.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">		<span class="keyword">auto</span>&amp; [code, time, instructors] = courses[i];</span><br><span class="line">		time.first.hour++;</span><br><span class="line">		time.second.hour++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">shift</span><span class="params">(vector&lt;Course&gt;&amp; courses)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [code, time, instructors] : courses) &#123;</span><br><span class="line">         time.first.hour++;</span><br><span class="line">         time.second.hour++;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>reference 就是一个别称，用来指代需要指代的对象，能借此改变指代对象但不 copy。</p>
+<h3 id="const-and-const-references"><a class="markdownIt-Anchor" href="#const-and-const-references"></a> Const and Const References</h3>
+<p>buggy:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; c_vec&#123;<span class="number">7</span>, <span class="number">8</span>&#125;; <span class="comment">// a const variable</span></span><br><span class="line"><span class="comment">// BAD - can&#x27;t declare non-const ref to const vector</span></span><br><span class="line">std::vector&lt;<span class="type">int</span>&gt;&amp; bad_ref = c_vec</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; c_ref = vec; <span class="comment">// a const reference</span></span><br><span class="line"><span class="comment">// BAD - Can&#x27;t declare a non-const reference as equal</span></span><br><span class="line"><span class="comment">// to a const reference!</span></span><br><span class="line">std::vector&lt;<span class="type">int</span>&gt;&amp; ref = c_ref;</span><br></pre></td></tr></table></figure>
+<p><strong>Need to explicitly specify</strong> <strong>const</strong> <strong>and &amp; with auto</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt; c_vec&#123;<span class="number">7</span>, <span class="number">8</span>&#125;;</span><br><span class="line">std::vector&lt;<span class="type">int</span>&gt;&amp; ref = vec;</span><br><span class="line"><span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;&amp; c_ref = vec;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> copy = c_ref; <span class="comment">// a non-const copy</span></span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span> copy = c_ref; <span class="comment">// a const copy</span></span><br><span class="line"><span class="keyword">auto</span>&amp; a_ref = ref; <span class="comment">// a non-const reference</span></span><br><span class="line"><span class="type">const</span> <span class="keyword">auto</span>&amp; c_aref = ref; <span class="comment">// a const reference</span></span><br></pre></td></tr></table></figure>
+<p>const reference 能够 reference 一个量，但是不能通过它来改变你 reference 的对象。且如果对象改变了，const reference 表示的值也会改变。</p>
+<h2 id="lecture-4-streams"><a class="markdownIt-Anchor" href="#lecture-4-streams"></a> Lecture 4: Streams</h2>
+<h3 id="streams"><a class="markdownIt-Anchor" href="#streams"></a> Streams</h3>
+<p>A <strong>stream</strong> is an <strong>abstraction</strong> for <strong>input/output</strong></p>
+<p><strong>Streams</strong> convert between the <strong>string</strong> <strong>representation</strong> <strong>of data and the data itself.</strong></p>
+<p>Idea: both input and output are strings; need to do computation on object representation</p>
+<h3 id="types-of-streams"><a class="markdownIt-Anchor" href="#types-of-streams"></a> Types of Streams</h3>
+<h4 id="output-streams"><a class="markdownIt-Anchor" href="#output-streams"></a> Output Streams</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; <span class="number">5</span> &lt;&lt; std::endl; <span class="comment">// prints 5 to the console</span></span><br><span class="line"></span><br><span class="line"><span class="function">std::ofstream <span class="title">out</span><span class="params">(“out.txt”, std::ofstream::out)</span></span>;</span><br><span class="line">out &lt;&lt; <span class="number">5</span> &lt;&lt; std::endl; <span class="comment">// out.txt contains 5</span></span><br></pre></td></tr></table></figure>
+<h4 id="input-streams"><a class="markdownIt-Anchor" href="#input-streams"></a> Input Streams</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// input: 5 abc 7</span></span><br><span class="line"><span class="type">int</span> x, z; string y;</span><br><span class="line">std::cin &gt;&gt; x &gt; y &gt; z; <span class="comment">// x=5, y=“xyz”, z=7</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// std::ifstream does the same for files</span></span><br><span class="line"><span class="function">std::ifstream <span class="title">in</span><span class="params">(“out.txt”, std::ifstream::in)</span></span>;</span><br><span class="line">in &gt;&gt; x &gt;&gt; y &gt;&gt; z; <span class="comment">// out.txt contains 5</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p><strong>&gt;&gt;</strong> reads up to the next whitespace character and <em>does not</em> go past that whitespace character.</p>
+</li>
+<li>
+<p><strong>getline</strong> reads up to the next delimiter (by default, ‘\n’), and <em>does</em> go past that delimiter.</p>
+</li>
+</ul>
+<h4 id="additional-stream-methods"><a class="markdownIt-Anchor" href="#additional-stream-methods"></a> Additional Stream Methods</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">input.<span class="built_in">get</span>(ch); <span class="comment">// reads a single char</span></span><br><span class="line">input.<span class="built_in">clear</span>(); <span class="comment">// resets the fail bit</span></span><br><span class="line">input.<span class="built_in">open</span>(“filename”); <span class="comment">// opens stream on a file</span></span><br><span class="line">input.<span class="built_in">seekg</span>(<span class="number">0</span>); <span class="comment">// rewinds stream to start</span></span><br><span class="line"></span><br><span class="line">input.<span class="built_in">close</span>(); <span class="comment">// closes stream, done automatically for you, so not necessary</span></span><br></pre></td></tr></table></figure>
+<h3 id="stringstreams"><a class="markdownIt-Anchor" href="#stringstreams"></a> Stringstreams</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">std::string input = “<span class="number">5</span> seventy <span class="number">2</span>”;</span><br><span class="line"></span><br><span class="line"><span class="function">std::istringstream <span class="title">i</span><span class="params">(input)</span></span>;</span><br><span class="line"><span class="type">int</span> x; std::string y; <span class="type">int</span> z;</span><br><span class="line">i &gt;&gt; x &gt;&gt; y &gt;&gt; z;</span><br><span class="line"></span><br><span class="line">std::cout &lt;&lt; z &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+<h3 id="stream-internals"><a class="markdownIt-Anchor" href="#stream-internals"></a> Stream Internals</h3>
+<h4 id="buffering"><a class="markdownIt-Anchor" href="#buffering"></a> Buffering</h4>
+<p>Accumulate characters in a temporary buffer. When full, write entire buffer to output. <strong>(for accelerate)</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">stream &lt;&lt; std::flush; <span class="comment">// flush what we have so far</span></span><br><span class="line">stream &lt;&lt; std::endl; <span class="comment">// flush with newline</span></span><br><span class="line"><span class="comment">// this is equivalent to: stream &lt;&lt; “\n” &lt;&lt; std::flush;</span></span><br></pre></td></tr></table></figure>
+<h4 id="state-bits"><a class="markdownIt-Anchor" href="#state-bits"></a> State Bits</h4>
+<ul>
+<li>Good bit: whether ready for read/write</li>
+<li>Fail bit: previous operation failed, future operations froze</li>
+<li>EOF bit: previous operation reached end of file</li>
+<li>Bad bit: external integrity error</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// here’s a very common read loop:</span></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">     stream &gt;&gt; temp; <span class="comment">// read data</span></span><br><span class="line">     <span class="keyword">if</span> (stream.<span class="built_in">fail</span>()) <span class="keyword">break</span>; <span class="comment">// checks for fail bit OR bad bit</span></span><br><span class="line">     <span class="built_in">doSomething</span>(temp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="chaining"><a class="markdownIt-Anchor" href="#chaining"></a> Chaining</h4>
+<p>&gt;&gt; and &lt;&lt; are actually functions!</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::ostream&amp; <span class="keyword">operator</span>&lt;&lt;(std::ostream&amp; out, <span class="type">const</span> std::string&amp; s);</span><br><span class="line">std::ostream&amp; <span class="keyword">operator</span>&lt;&lt;(std::ostream&amp; out, <span class="type">const</span> std::string&amp; s);</span><br></pre></td></tr></table></figure>
+<p>chaining 的过程：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// cout &lt;&lt; &quot;test&quot; &lt;&lt; 5</span></span><br><span class="line"><span class="keyword">operator</span>&lt;&lt;(<span class="keyword">operator</span>&lt;&lt;(cout, “test”), <span class="number">5</span>); <span class="comment">// step 1</span></span><br><span class="line"><span class="keyword">operator</span>&lt;&lt;(cout, <span class="number">5</span>); <span class="comment">// step 2</span></span><br><span class="line">cout <span class="comment">// step 3</span></span><br></pre></td></tr></table></figure>
+<h2 id="lecture-5-containers"><a class="markdownIt-Anchor" href="#lecture-5-containers"></a> Lecture 5: Containers</h2>
+<h3 id="sequence-containers"><a class="markdownIt-Anchor" href="#sequence-containers"></a> Sequence Containers</h3>
+<h4 id="stdvector"><a class="markdownIt-Anchor" href="#stdvector"></a> std::vector</h4>
+<p>内部结构可以简要理解为：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vector</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    T* data_;        <span class="comment">// 指向动态数组</span></span><br><span class="line">    <span class="type">size_t</span> size_;    <span class="comment">// 当前有多少个元素</span></span><br><span class="line">    <span class="type">size_t</span> capacity_;<span class="comment">// 当前最多能放多少个元素</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>当容量不够时，如果还需要 <code>push_back</code> ，则会执行：</p>
+<ol>
+<li>申请一块更大的连续内存</li>
+<li>把旧元素移动/拷贝过去</li>
+<li>销毁旧元素</li>
+<li>释放旧内存</li>
+<li>加入新元素</li>
+</ol>
+<h4 id="stddeque"><a class="markdownIt-Anchor" href="#stddeque"></a> std::deque</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">deq.<span class="built_in">push_front</span>();</span><br><span class="line">deq.<span class="built_in">pop_back</span>();</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>内部结构：多块连续内存 + 一层索引结构，而不是像 <code>vector</code> 是一段连续内存</p>
+<h4 id="stdlist"><a class="markdownIt-Anchor" href="#stdlist"></a> std::list</h4>
+<p>like <code>std::stack</code> + <code>std::queue</code> , provides fast insertion, but can’t randomly index into it fastly.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">std::list&lt;<span class="type">int</span>&gt; list&#123;<span class="number">5</span>, <span class="number">6</span>&#125;; <span class="comment">// &#123;5, 6&#125;</span></span><br><span class="line">list.<span class="built_in">push_front</span>(<span class="number">3</span>);</span><br><span class="line">list.<span class="built_in">pop_back</span>(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="comparison"><a class="markdownIt-Anchor" href="#comparison"></a> Comparison</h4>
+<p><img src="p1.png" alt="" /></p>
+<ul>
+<li>
+<p>vector: use for most purposes</p>
+</li>
+<li>
+<p>deque: frequent insert/remove at front</p>
+</li>
+<li>
+<p>list: very rarely - if need splitting/joining</p>
+</li>
+</ul>
+<h3 id="container-adaptors"><a class="markdownIt-Anchor" href="#container-adaptors"></a> Container Adaptors</h3>
+<p><code>std::stack</code> and <code>std::queue</code></p>
+<p>A wrapper for an object changes how external users can interact with that object.</p>
+<p><code>std::stack</code> 和 <code>std::queue</code> 可以理解为一种 container adapter，内部的 container  是 <code>std::deque</code></p>
+<h3 id="associative-containers"><a class="markdownIt-Anchor" href="#associative-containers"></a> Associative Containers</h3>
+<h4 id="map-set"><a class="markdownIt-Anchor" href="#map-set"></a> map &amp; set</h4>
+<h4 id="unordered_map-unordered_set"><a class="markdownIt-Anchor" href="#unordered_map-unordered_set"></a> unordered_map &amp; unordered_set</h4>
+<h4 id="multimap-multiset"><a class="markdownIt-Anchor" href="#multimap-multiset"></a> multimap, multiset</h4>
+<h2 id="lecture-6-iterators"><a class="markdownIt-Anchor" href="#lecture-6-iterators"></a> Lecture 6: Iterators</h2>
+<h3 id="iterators"><a class="markdownIt-Anchor" href="#iterators"></a> Iterators</h3>
+<p>Iterators allow iteration over any container whether ordered or unordered</p>
+<p>iterators 就像是 claw ，能够以一定顺序抓取 container 中的元素</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">std::map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; map &#123;&#123;<span class="number">1</span>, <span class="number">2</span>&#125;, &#123;<span class="number">3</span>, <span class="number">4</span>&#125;&#125;;</span><br><span class="line"><span class="comment">// note that dereferencing a std::map::iterator returns a std::pair</span></span><br><span class="line"><span class="keyword">auto</span> iter = map.<span class="built_in">begin</span>(); <span class="comment">// what is *iter?</span></span><br><span class="line">++iter; <span class="comment">// what is (*iter).second now?</span></span><br><span class="line"><span class="keyword">auto</span> iter2 = iter;</span><br><span class="line">++iter; <span class="comment">// what does (*iter).first return?</span></span><br><span class="line"><span class="comment">// ++iter: go to the next element</span></span><br><span class="line"><span class="comment">// *iter: retrieve what’s at iter’s position</span></span><br><span class="line"><span class="comment">// copy constructor: create another iterator pointing to same thing</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> key = (*iter).first;</span><br><span class="line"><span class="keyword">auto</span> key = iter-&gt;first</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://allfadeaway.github.io/myblog">Ryan Xu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://allfadeaway.github.io/myblog/2026/10/03/CS106L_note1/">http://allfadeaway.github.io/myblog/2026/10/03/CS106L_note1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/myblog/tags/CS106L/">CS106L</a></div><div class="post-share"><div class="social-share" data-image="/myblog/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/myblog/2026/07/28/Auto-Encoder/" title="Auto Encoder"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Auto Encoder</div></div><div class="info-2"><div class="info-item-1">定义：An auto-encoder is simply a neural network that tries to copy its input to its output. 组成：   an input, xxx   an encoder function fff   a “code” or internal representation h=f(x)h=f(x)h=f(x)   a decder function ggg   an output, also called “reconstruction” r=g(h)=g(f(x))r=g(h)=g(f(x))r=g(h)=g(f(x))   a loss function LLL computing a scalar L(r,x)L(r,x)L(r,x)   后面感觉暂时用不到，懒得看了…… </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/myblog/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/myblog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Ryan Xu</div><div class="author-info-description"></div><div class="site-data"><a href="/myblog/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/myblog/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/myblog/categories/"><div class="headline">Categories</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/allfadeaway"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cs106l_note1"><span class="toc-number">1.</span> <span class="toc-text"> CS106L_note1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#lecture2-types-and-structs"><span class="toc-number">1.1.</span> <span class="toc-text"> Lecture2: Types and Structs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#types"><span class="toc-number">1.1.1.</span> <span class="toc-text"> Types</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#structs"><span class="toc-number">1.1.2.</span> <span class="toc-text"> Structs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pairs-tuples"><span class="toc-number">1.1.3.</span> <span class="toc-text"> Pairs &amp; Tuples</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#auto"><span class="toc-number">1.1.4.</span> <span class="toc-text"> Auto</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#structured-binding"><span class="toc-number">1.1.5.</span> <span class="toc-text"> Structured Binding</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lecture-3-initialization-and-references"><span class="toc-number">1.2.</span> <span class="toc-text"> Lecture 3: Initialization and References</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#uniform-initialization"><span class="toc-number">1.2.1.</span> <span class="toc-text"> Uniform Initialization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#references"><span class="toc-number">1.2.2.</span> <span class="toc-text"> References</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#const-and-const-references"><span class="toc-number">1.2.3.</span> <span class="toc-text"> Const and Const References</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lecture-4-streams"><span class="toc-number">1.3.</span> <span class="toc-text"> Lecture 4: Streams</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#streams"><span class="toc-number">1.3.1.</span> <span class="toc-text"> Streams</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#types-of-streams"><span class="toc-number">1.3.2.</span> <span class="toc-text"> Types of Streams</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#output-streams"><span class="toc-number">1.3.2.1.</span> <span class="toc-text"> Output Streams</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#input-streams"><span class="toc-number">1.3.2.2.</span> <span class="toc-text"> Input Streams</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#additional-stream-methods"><span class="toc-number">1.3.2.3.</span> <span class="toc-text"> Additional Stream Methods</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stringstreams"><span class="toc-number">1.3.3.</span> <span class="toc-text"> Stringstreams</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stream-internals"><span class="toc-number">1.3.4.</span> <span class="toc-text"> Stream Internals</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#buffering"><span class="toc-number">1.3.4.1.</span> <span class="toc-text"> Buffering</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#state-bits"><span class="toc-number">1.3.4.2.</span> <span class="toc-text"> State Bits</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#chaining"><span class="toc-number">1.3.4.3.</span> <span class="toc-text"> Chaining</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lecture-5-containers"><span class="toc-number">1.4.</span> <span class="toc-text"> Lecture 5: Containers</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sequence-containers"><span class="toc-number">1.4.1.</span> <span class="toc-text"> Sequence Containers</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#stdvector"><span class="toc-number">1.4.1.1.</span> <span class="toc-text"> std::vector</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#stddeque"><span class="toc-number">1.4.1.2.</span> <span class="toc-text"> std::deque</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#stdlist"><span class="toc-number">1.4.1.3.</span> <span class="toc-text"> std::list</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#comparison"><span class="toc-number">1.4.1.4.</span> <span class="toc-text"> Comparison</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#container-adaptors"><span class="toc-number">1.4.2.</span> <span class="toc-text"> Container Adaptors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#associative-containers"><span class="toc-number">1.4.3.</span> <span class="toc-text"> Associative Containers</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#map-set"><span class="toc-number">1.4.3.1.</span> <span class="toc-text"> map &amp; set</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#unordered_map-unordered_set"><span class="toc-number">1.4.3.2.</span> <span class="toc-text"> unordered_map &amp; unordered_set</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#multimap-multiset"><span class="toc-number">1.4.3.3.</span> <span class="toc-text"> multimap, multiset</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lecture-6-iterators"><span class="toc-number">1.5.</span> <span class="toc-text"> Lecture 6: Iterators</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#iterators"><span class="toc-number">1.5.1.</span> <span class="toc-text"> Iterators</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/10/03/CS106L_note1/" title="CS106L_note1">CS106L_note1</a><time datetime="2026-10-03T08:51:47.000Z" title="Created 2026-10-03 16:51:47">2026-10-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/28/Auto-Encoder/" title="Auto Encoder">Auto Encoder</a><time datetime="2026-07-28T06:09:43.000Z" title="Created 2026-07-28 14:09:43">2026-07-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/25/VAE/" title="VAE">VAE</a><time datetime="2026-07-25T05:04:33.000Z" title="Created 2026-07-25 13:04:33">2026-07-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/25/Generative-Models/" title="Generative Models">Generative Models</a><time datetime="2026-07-25T04:06:54.000Z" title="Created 2026-07-25 12:06:54">2026-07-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/myblog/2026/07/24/Paper-Reading-Notes-1-VQ-VAE/" title="Paper Reading Notes 1: VQ-VAE">Paper Reading Notes 1: VQ-VAE</a><time datetime="2026-07-24T08:45:50.000Z" title="Created 2026-07-24 16:45:50">2026-07-24</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Ryan Xu</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/myblog/js/utils.js?v=5.6.1"></script><script src="/myblog/js/main.js?v=5.6.1"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css')
+    if (false) {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
